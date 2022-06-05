@@ -1,4 +1,4 @@
-class PaginatedData<T> {
+class Paginated<T> {
   List<T> data;
   int currrentPage;
   int previousPage;
@@ -6,7 +6,7 @@ class PaginatedData<T> {
   final int totalDataCount;
   final int totalPages;
 
-  PaginatedData({
+  Paginated({
     this.currrentPage,
     this.data,
     this.nextPage,

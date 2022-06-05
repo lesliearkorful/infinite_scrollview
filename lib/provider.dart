@@ -4,9 +4,9 @@ import 'package:infinite_scrollview/model.dart';
 class DataProvider extends ChangeNotifier {
   int _per = 20;
 
-  PaginatedData<Data> _paginated;
+  Paginated<Data> _paginated;
 
-  PaginatedData<Data> get paginatedData => _paginated;
+  Paginated<Data> get paginatedData => _paginated;
 
   List<Data> _generator(int count) {
     return List.generate(
@@ -18,9 +18,9 @@ class DataProvider extends ChangeNotifier {
   }
 
   void initialize() {
-    final _dataLength = 70;
+    final _dataLength = 170;
     final _list = _generator(_per);
-    _paginated = PaginatedData(
+    _paginated = Paginated(
       data: _list,
       currrentPage: 1,
       nextPage: 2,
@@ -30,8 +30,12 @@ class DataProvider extends ChangeNotifier {
     );
   }
 
-  Future<void> loadMore() async {
+  Future<Paginated<Data>> loadItems() async {
     await Future.delayed(Duration(seconds: 1));
+    if (_paginated == null) {
+      initialize();
+      return _paginated;
+    }
     if (_paginated.nextPage <= _paginated.totalPages) {
       _paginated.currrentPage += 1;
       _paginated.nextPage += 1;
@@ -41,8 +45,9 @@ class DataProvider extends ChangeNotifier {
       if (_paginated.totalPages == _paginated.currrentPage && (_rem < _per)) {
         _newPer = _rem;
       }
-      _paginated.data = _paginated.data..addAll(_generator(_newPer));
+      _paginated.data..addAll(_generator(_newPer));
       notifyListeners();
     }
+    return _paginated;
   }
 }
